@@ -1,0 +1,19 @@
+#!/bin/bash
+IN="in"
+OUT="out"
+GOOD="good"
+for index in {1..7}
+do
+    echo "--- Starting ccw test$index ----------"
+    rm -f $OUT/outC$index $OUT/errC$index
+    echo "Running: ../ccw <$IN/test$index > $OUT/outC$index 2> $OUT/errC$index"
+    ../ccw <$IN/test$index > $OUT/outC$index 2> $OUT/errC$index
+    echo ccw test$index diff
+    diff $GOOD/out$index $OUT/outC$index
+    diff $GOOD/err$index $OUT/errC$index
+    echo "--- Ending ccw test$index ----------"
+    #echo "--- Starting Valgrind test C ----------"
+    #valgrind --leak-check=full --leak-resolution=med -s ../ccw <$IN/test$index > $OUT/outC$index 2> $OUT/errC$index
+    #echo "--- Ending Valgrind test C ----------"
+done
+echo All Done
