@@ -38,14 +38,14 @@ result:
      * (2) put the address of cntword in r2
      * (3) put the address of cntchar in r3
      */
-    ldr     r0, =.Lmsg
-    ldr     r1, =cntline
-    ldr     r2, =cntword
-    ldr     r3, =cntchar
-    ldr     r1, [r1]
-    ldr     r2, [r2]
-    ldr     r3, [r3]    
-    bl      printf
+    ldr     r0, =.Lmsg          // puts address of .Lmsg in r0
+    ldr     r1, =cntline        // puts address of cntline in r1
+    ldr     r2, =cntword        // puts address of cntword in r2
+    ldr     r3, =cntchar        // puts address of cntchar in r3
+    ldr     r1, [r1]            // puts what cntline is pointing to in r1
+    ldr     r2, [r2]            // puts what cntword is pointing to in r2
+    ldr     r3, [r3]            // puts what cntchar is pointing to in r3
+    bl      printf              // calls printf function
     
     // do not edit below this line
     // function epilogue
