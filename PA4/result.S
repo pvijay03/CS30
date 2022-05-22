@@ -18,7 +18,7 @@
 
     .text
     //////////////////////////////////////////////////////
-    // void result(void)                                     //
+    // void result(void)                                //
     //////////////////////////////////////////////////////
 
     .global result              // global for linking to
