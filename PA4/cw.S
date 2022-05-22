@@ -31,6 +31,15 @@ buffer:      .space BUFSZ   // array of chars
     // int main(int argc, char **argv)                  //
     // program usage: cw [file]                         //
     //                                                  //
+    // Operation: goes through buffers until end        //
+    // of file counting the chars in words, words,      //
+    // and number of new lines                          //
+    // Assumes: any word that is not \n, \t, or ' '     //
+    // is a char in a word                              //
+    // Params: argc, argv                               //
+    // Returns:  1 (EXIT_FAILURE) if setup does not     //
+    // return 0, other wise 0 (EXIT_SUCCESS);           //
+    //                                                  //
     // you can use any scratch register r0-r3           //
     // you can use these preserved registers            //
     // r0     contains return value of rd()             //
