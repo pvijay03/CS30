@@ -1,0 +1,79 @@
+#!/bin/bash
+IN="in"
+OUT="out"
+GOOD="good"
+echo "##########"
+echo Assembly version Running Public Tests
+for index in {1..2}
+do
+    echo "----- Starting test sequence $index -----"
+    rm -f $OUT/ENout$index $OUT/ENerr$index
+    echo "Running encryption: ../encrypter -e -b BOOK $OUT/ENout$index <$IN/ENtest$index 2> $OUT/ENerr$index"
+    ../encrypter -e -b BOOK $OUT/ENout$index <$IN/ENtest$index 2> $OUT/ENerr$index
+    cmp -l $GOOD/ENout$index $OUT/ENout$index
+    if [ $? -ne 0 ]; then
+        echo "***** Encryption test $index failed ***** "
+    else
+        echo "***** Encryption test $index passed *****"
+    fi
+    rm -f $OUT/DEout$index $OUT/DEerr$index
+    echo "Running decryption: ../encrypter -d -b BOOK $IN/DEtest$index >$OUT/DEout$index 2> $OUT/DEerr$index"
+    ../encrypter -d -b BOOK $IN/DEtest$index >$OUT/DEout$index 2> $OUT/DEerr$index
+    cmp -s $GOOD/DEout$index $OUT/DEout$index
+    if [ $? -ne 0 ]; then
+        echo "***** Decryption test $index failed *****"
+        if [ -s $OUT/DEout$index ]; then
+            echo "< expected"
+            echo "> your code"
+            echo "differences are:"
+            diff $GOOD/DEout$index $OUT/DEout$index
+        else
+            echo "File is empty: $OUT/DEout$index"
+        fi
+    else
+        echo "***** Decryption test $index passed *****"
+    fi
+    echo "----- Ending   test sequence $index -----"
+done
+echo "----- Starting test short book -----"
+rm -f $OUT/shortbook  $OUT/errshortbook
+echo "Running: ../encrypter -e -b SHORTBOOK $OUT/shortbook <$IN/ENtest2 2> $OUT/errshortbook"
+../encrypter -e -b SHORTBOOK $OUT/shortbook <$IN/ENtest2 2> $OUT/errshortbook
+cmp -s $GOOD/errshortbook $OUT/errshortbook
+if [ $? -ne 0 ]; then
+    echo "***** Short book test failed *****"
+    echo "< expected"
+    echo "> your code"
+    echo "differences are:"
+    diff $GOOD/errshortbook $OUT/errshortbook
+else
+    if test -f $OUT/shortbook; then
+        echo "***** Short book test failed *****"
+        echo "$OUT/shortbook exists, was cleanup called?"
+    else
+        echo "***** Short book test  passed *****"
+    fi
+fi
+echo "----- Ending   test short book -----"
+echo "----- Starting test binary     -----"
+rm -f $OUT/ENbinary  $OUT/ENerrbinary
+echo "Running encryption: ../Cencrypter -e -b BOOK $OUT/ENbinary <$IN/ENbinary 2> $OUT/ENerrbinary"
+../encrypter -e -b BOOK $OUT/ENbinary <$IN/ENbinary 2> $OUT/ENerrbinary
+cmp -s $GOOD/ENbinary $OUT/ENbinary
+if [ $? -ne 0 ]; then
+    echo "***** Binary encrypt failed  *****"
+else
+    echo "***** Binary encrypt   passed *****"
+fi
+rm -f $OUT/DEbinary  $OUT/DEerrbinary
+echo "Running decryption: ../Cencrypter -d -b BOOK $IN/DEbinary >$OUT/DEbinary 2> $OUT/DEerrbinary"
+../encrypter -d -b BOOK $IN/DEbinary >$OUT/DEbinary 2> $OUT/DEerrbinary
+cmp -s $GOOD/DEbinary $OUT/DEbinary
+if [ $? -ne 0 ]; then
+    echo "***** Binary decrypt failed  *****"
+else
+    echo "***** Binary decrypt   passed *****"
+fi
+echo "----- Ending   test binary     -----"
+echo "Assembly version Tests Complete"
+echo "##########"
